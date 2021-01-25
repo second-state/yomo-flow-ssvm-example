@@ -1,0 +1,11 @@
+name: Service
+host: localhost
+port: 9999
+flows:
+  - name: ssvm
+    host: localhost
+    port: 4141
+sinks:
+  - name: ssvm
+    host: localhost
+    port: 4141
