@@ -1,4 +1,4 @@
-![ssvm-yomo](https://github.com/yomorun/yomo-flow-ssvm-example/blob/main/yomo-ssvm-2.jpg?raw=true)
+![ssvm-yomo](https://raw.githubusercontent.com/yomorun/yomo-flow-ssvm-example/main/yomo-ssvm-2.png)
 
 # yomo-flow-ssvm-example
 
