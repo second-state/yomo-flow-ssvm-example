@@ -1,3 +1,5 @@
+![ssvm-yomo](https://github.com/yomorun/yomo-flow-ssvm-example/blob/main/yomo-ssvm-2.jpg?raw=true)
+
 # yomo-flow-ssvm-example
 
 This examples represents how to write a [yomo-flow](https://yomo.run/flow) with [ssvm](https://www.secondstate.io/)
