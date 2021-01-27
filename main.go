@@ -2,7 +2,9 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"strconv"
 
 	wasm "github.com/wasmerio/go-ext-wasm/wasmer"
 	y3 "github.com/yomorun/y3-codec-golang"
@@ -45,7 +47,7 @@ func (s *quicServerHandler) Read(st quic.Stream) error {
 	go func() {
 		for item := range ch {
 			// Invoke wasm
-			val := triple(item.(noiseData).Noise)
+			val := triple_ssvm(item.(noiseData).Noise)
 			println(val)
 		}
 	}()
@@ -71,7 +73,19 @@ func onObserve(v []byte) (interface{}, error) {
 	return data, nil
 }
 
-func triple(i float64) float64 {
+func triple_ssvm(i float64) float64 {
+	f := fmt.Sprintf("%f", i)
+	result := Run(
+		"/root/yomo-flow-ssvm-example/triple/pkg/triple_bg.wasm",
+		map[string]string{},
+		SSVMOptions{},
+		[]string{f},
+	)
+	s, _ := strconv.ParseFloat(string(result), 64)
+	return s
+}
+
+func triple_wasmer(i float64) float64 {
 	// Reads the WebAssembly module as bytes.
 	bytes, _ := wasm.ReadBytes("triple/pkg/triple_lib_bg.wasm")
 	// Instantiates the WebAssembly module.
