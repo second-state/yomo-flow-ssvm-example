@@ -4,6 +4,11 @@
 
 This examples represents how to write a [yomo-flow](https://yomo.run/flow) with [ssvm](https://www.secondstate.io/)
 
+## Prerequisites
+
+Please follow [ssvm](https://github.com/second-state/ssvm) to build `ssvm` first.
+Then link ssvm binary to system $PATH.
+
 ## Compile wasm file
 
 ```bash
@@ -36,7 +41,7 @@ will get the wasm file at `triple/pkg/` directory
 1. Run this `yomo-flow`
 
 ```bash
-go run main.go
+go run main.go ssvm_wrapper.go
 ```
 
 Then start your [yomo source](https://yomo.run/source) and [yomo zipper](https://yomo.run/zipper)
@@ -66,9 +71,7 @@ you'll get:
 ^Csignal: interrupt
 ```
 
-## Run via ssvm
-
-Please follow [ssvm](https://github.com/second-state/ssvm) to build `ssvm` first.
+## Notes
 
 `triple/src/main.rs` will be built to pkg/triple_bg.wasm which will be passed to `ssvm` command.
 
@@ -80,7 +83,3 @@ You need to pass
 4. `args` for wasm
 
 `ssvm_main.go` is a sample.
-
-```bash
-go run main.go ssvm_wrapper.go
-```
