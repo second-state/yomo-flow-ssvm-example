@@ -65,3 +65,22 @@ you'll get:
 +9.036794e+015
 ^Csignal: interrupt
 ```
+
+## Run via ssvm
+
+Please follow [ssvm](https://github.com/second-state/ssvm) to build `ssvm` first.
+
+`triple/src/main.rs` will be built to pkg/triple_bg.wasm which will be passed to `ssvm` command.
+
+`ssvm_wrapper.go` wraps the command call for you.
+You need to pass
+1. `wasm` file path
+2. `env` for command eg. LD_LIBRARY_PATH
+3. `ssvm` [options](https://github.com/second-state/ssvm#run-ssvm-ssvm-with-general-wasm-runtime)
+4. `args` for wasm
+
+`ssvm_main.go` is a sample.
+
+```bash
+go run main.go ssvm_wrapper.go
+```
