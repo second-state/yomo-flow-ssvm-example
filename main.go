@@ -74,12 +74,10 @@ func onObserve(v []byte) (interface{}, error) {
 
 func triple(i float64) float64 {
 	f := fmt.Sprintf("%f", i)
-	result := Run(
-		"/root/yomo-flow-ssvm-example/triple/pkg/triple_bg.wasm",
-		map[string]string{},
-		SSVMOptions{},
-		[]string{f},
-	)
+	wasmOpts := SSVMWasmOptions {
+		wasmFile: "/root/yomo-flow-ssvm-example/triple/pkg/triple.wasm",
+	}
+	result := Run(wasmOpts, []string{f})
 	s, _ := strconv.ParseFloat(string(result), 64)
 	return s
 }

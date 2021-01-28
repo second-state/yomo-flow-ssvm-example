@@ -9,19 +9,32 @@ import (
 	"os/exec"
 )
 
-type SSVMOptions struct {
-	reactor bool
-	dirs map[string]string
-	envs map[string]string
+type SSVMWasmOptions struct {
+	wasmFile string // wasm file path
+	cmdEnvs map[string]string // command line env
+	reactor bool // ssvm option
+	dirs map[string]string // ssvm option
+	envs map[string]string // ssvm option
 }
 
-func Run(wasm string, cmdEnvs map[string]string, options SSVMOptions, args []string) []byte {
-	cmdArgs := prepareCmdArgs(wasm, options)
-	cmd := exec.Command("ssvm", cmdArgs...)
-	cmd.Env = os.Environ()
-	for ek, ev := range cmdEnvs {
-		cmd.Env = append(cmd.Env, fmt.Sprintf("%s='%s'", ek, ev))
-	}
+func Run(wasmOptions SSVMWasmOptions, args interface{}) []byte {
+	// Prerequisite:
+	// Build ssvm
+	// https://github.com/second-state/ssvm
+	cmd := prepareCmd("ssvm", wasmOptions)
+	return run(cmd, args)
+}
+
+func RunTensorflow(wasmOptions SSVMWasmOptions, args interface{}) []byte {
+	// Prerequisite:
+	// Build ssvm-tensorflow and download the required shared libraries
+	// Then LD_LIBRARY_PATH should be passed via cmdEnvs
+	// https://github.com/second-state/ssvm-tensorflow
+	cmd := prepareCmd("ssvm-tensorflow", wasmOptions)
+	return run(cmd, args)
+}
+
+func run(cmd exec.Cmd, args interface{}) []byte {
 	stdin, err := cmd.StdinPipe()
 	if err != nil {
 		log.Fatal(err)
@@ -29,8 +42,13 @@ func Run(wasm string, cmdEnvs map[string]string, options SSVMOptions, args []str
 
 	go func() {
 		defer stdin.Close()
-		x, _ := json.Marshal(args)
-		io.WriteString(stdin, string(x))
+		switch v := args.(type) {
+		case []string:
+			x, _ := json.Marshal(v)
+			io.WriteString(stdin, string(x))
+		case []byte:
+			stdin.Write(v)
+		}
 	}()
 
 	out, err := cmd.CombinedOutput()
@@ -41,17 +59,24 @@ func Run(wasm string, cmdEnvs map[string]string, options SSVMOptions, args []str
 	return out
 }
 
-func prepareCmdArgs(wasm string, options SSVMOptions) []string {
-	cmdArgs := []string{wasm}
-	if options.reactor {
+func prepareCmd(cmdName string, wasmOptions SSVMWasmOptions) exec.Cmd {
+	cmdArgs := []string{wasmOptions.wasmFile}
+	if wasmOptions.reactor {
 		cmdArgs = append(cmdArgs, "--reactor")
 	}
-	for dk, dv := range options.dirs {
+	for dk, dv := range wasmOptions.dirs {
 		cmdArgs = append(cmdArgs, "--dir", fmt.Sprintf("%s:'%s'", dk, dv))
 	}
-	for ek, ev := range options.envs {
+	for ek, ev := range wasmOptions.envs {
 		cmdArgs = append(cmdArgs, "--env", fmt.Sprintf("%s='%s'", ek, ev))
 	}
-	return cmdArgs
+
+	cmd := exec.Command(cmdName, cmdArgs...)
+	cmd.Env = os.Environ()
+	for ek, ev := range wasmOptions.cmdEnvs {
+		cmd.Env = append(cmd.Env, fmt.Sprintf("%s='%s'", ek, ev))
+	}
+
+	return *cmd
 }
 
