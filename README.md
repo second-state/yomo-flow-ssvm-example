@@ -73,13 +73,18 @@ you'll get:
 
 ## Notes
 
-`triple/src/main.rs` will be built to pkg/triple_bg.wasm which will be passed to `ssvm` command.
+`triple/src/main.rs` will be built to pkg/triple.wasm which will be passed to `ssvm` command.
 
 `ssvm_wrapper.go` wraps the command call for you.
 You need to pass
 1. `wasm` file path
 2. `env` for command eg. LD_LIBRARY_PATH
 3. `ssvm` [options](https://github.com/second-state/ssvm#run-ssvm-ssvm-with-general-wasm-runtime)
+   * --reactor
+   * --dir
+   * --env
 4. `args` for wasm
 
-`ssvm_main.go` is a sample.
+`ssvm_main.go` is a sample. Besides triple, it contains a tensorflow demo that require you to
+follow [ssvm-tensorflow](https://github.com/second-state/ssvm-tensorflow) to build `ssvm-tensorflow` first.
+Don't forget to link ssvm-tensorflow binary to system $PATH and download the dependent library.
