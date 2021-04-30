@@ -25,7 +25,7 @@ will get the wasm file at `triple/pkg/` directory
 1. Run this `yomo-flow`
 
 ```bash
-go run main.go ./triple/pkg/triple_lib_bg.wasm tripe
+go run main.go ./triple/pkg/triple_lib_bg.wasm triple
 ```
 
 Then start your [yomo source](https://yomo.run/source) and [yomo zipper](https://yomo.run/zipper)
